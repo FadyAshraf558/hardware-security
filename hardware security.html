@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Hardware Security Quiz</title>
+    <style>
+        /* 
+    MOBILE FIRST OPTIMIZATION 
+    - Base resets
+    - Touch targets
+    - Responsive layouts
+*/
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg-start: #eff6ff;
+            --bg-end: #e0e7ff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            /* Remove iOS tap gray box */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background: linear-gradient(to bottom right, var(--bg-start), var(--bg-end));
+            min-height: 100vh;
+            min-height: 100dvh;
+            /* Mobile viewport height support */
+            padding: 1rem;
+            padding-top: env(safe-area-inset-top, 1rem);
+            padding-bottom: env(safe-area-inset-bottom, 1rem);
+            padding-left: env(safe-area-inset-left, 1rem);
+            padding-right: env(safe-area-inset-right, 1rem);
+            font-size: 16px;
+            /* Base readable size */
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 56rem;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .container-lg {
+            max-width: 64rem;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Icons & Header */
+        .lecture-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-top: 1rem;
+        }
+
+        .icon-badge {
+            display: inline-block;
+            padding: 1rem;
+            background-color: var(--primary);
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+        }
+
+        .icon-badge svg {
+            width: 3rem;
+            height: 3rem;
+            color: white;
+        }
+
+        .lecture-header h1 {
+            font-size: clamp(1.75rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .lecture-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        /* Cards & Grid */
+        .lecture-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .lecture-card {
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s, box-shadow 0.2s;
+            touch-action: manipulation;
+        }
+
+        .lecture-card:active {
+            transform: scale(0.98);
+        }
+
+        .lecture-card h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .lecture-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Buttons - Touch Optimized */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.875rem 1.5rem;
+            /* Larger padding */
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            min-height: 3rem;
+            /* 48px min height */
+            width: 100%;
+            /* Mobile default */
+            user-select: none;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: var(--text-main);
+        }
+
+        .btn-green {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-back {
+            background: none;
+            color: var(--primary);
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+            justify-content: flex-start;
+            width: auto;
+        }
+
+        /* Quiz Screen */
+        .progress-container {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 0.75rem;
+            background: #f3f4f6;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .question-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .question-container h3 {
+            font-size: 1.25rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Option Buttons */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-button {
+            text-align: left;
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            font-size: 1rem;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .option-button:active {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .option-button.selected {
+            border-color: var(--primary);
+            background-color: #eef2ff;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 1.5rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        /* True/False Buttons */
+        .true-false-container {
+            display: flex;
+            gap: 1rem;
+            flex-direction: column;
+            /* Stack on mobile usually better */
+        }
+
+        @media(min-width: 640px) {
+            .true-false-container {
+                flex-direction: row;
+            }
+        }
+
+        .btn-true,
+        .btn-false {
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .btn-true.selected {
+            border-color: var(--success);
+            background-color: #dcfce7;
+            color: #14532d;
+        }
+
+        .btn-false.selected {
+            border-color: var(--danger);
+            background-color: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        /* Navigation Buttons */
+        .button-group-horizontal {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .button-group-horizontal .btn {
+            flex: 1;
+        }
+
+        .btn-prev {
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            color: var(--text-muted);
+        }
+
+        /* Results */
+        .results-container {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            margin: 1rem 0;
+        }
+
+        .review-section {
+            margin-top: 3rem;
+        }
+
+        .answer-review {
+            background: white;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border-radius: 0.75rem;
+            border-left: 5px solid #e5e7eb;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .answer-review.correct {
+            border-left-color: var(--success);
+        }
+
+        .answer-review.incorrect {
+            border-left-color: var(--danger);
+        }
+
+        .answer-review-header {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .answer-review-icon {
+            width: 2rem;
+            /* Larger icon */
+            height: 2rem;
+            flex-shrink: 0;
+        }
+
+        .answer-review-icon.correct {
+            color: var(--success);
+        }
+
+        .answer-review-icon.incorrect {
+            color: var(--danger);
+        }
+
+        .answer-explanation {
+            margin-top: 1rem;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Utilities */
+        .hidden {
+            display: none !important;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        /* Large Screen Enhancements */
+        @media (min-width: 768px) {
+            body {
+                padding: 2rem;
+            }
+
+            .lecture-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .btn {
+                width: auto;
+                display: inline-flex;
+            }
+
+            .btn-primary {
+                width: 100%;
+            }
+
+            /* Cards keep full width */
+            .button-group-horizontal .btn {
+                width: auto;
+                flex: 1;
+            }
+
+            .lecture-header h1 {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script>
+        // Quiz Data
+        const quizData = {
+            L01: {
+                title: "L01 - Hardware Security",
+                mcq: [
+                    {
+                        q: "Hardware security primarily focuses on protecting which of the following assets?",
+                        options: ["Only software source code", "Only network communication protocols", "Electronic hardware and secrets stored within it", "Cloud-based services"],
+                        correct: 2,
+                        explanation: "Hardware security protects physical electronic components and embedded secrets such as keys and firmware."
+                    },
+                    {
+                        q: "Which of the following is NOT a hardware asset?",
+                        options: ["Integrated circuits (IC)", "Passive components", "Printed circuit boards (PCB)", "Operating system kernels"],
+                        correct: 3,
+                        explanation: "Operating system kernels are software assets, not hardware assets."
+                    },
+                    {
+                        q: "Which class of security focuses on confidentiality, integrity, and availability of information?",
+                        options: ["Hardware security", "Software security", "Information security", "Network security"],
+                        correct: 2,
+                        explanation: "Information security is defined by the CIA triad."
+                    },
+                    {
+                        q: "Hardware security is considered foundational because it:",
+                        options: ["Eliminates the need for cryptography", "Provides a trust anchor for higher system layers", "Replaces software security mechanisms", "Only protects embedded systems"],
+                        correct: 1,
+                        explanation: "Hardware serves as the root of trust for software and system security."
+                    },
+                    {
+                        q: "Which computing class is characterized by tight hardware–software integration and highly customized design?",
+                        options: ["General-purpose systems", "Embedded systems", "Cloud systems", "Distributed systems"],
+                        correct: 1,
+                        explanation: "Embedded systems are highly customized and tightly integrated."
+                    },
+                    {
+                        q: "Which computing class includes IoT and cyber-physical systems?",
+                        options: ["Embedded systems", "General-purpose systems", "Emerging compute class", "Distributed systems"],
+                        correct: 2,
+                        explanation: "IoT systems are categorized as emerging compute systems."
+                    },
+                    {
+                        q: "In the computing system layers, which layer is the most difficult to attack but has the highest impact?",
+                        options: ["Application", "Operating system", "Firmware", "Hardware"],
+                        correct: 3,
+                        explanation: "Hardware attacks are difficult but have the highest impact."
+                    },
+                    {
+                        q: "Which layer integrates physical components such as PCB and encasing?",
+                        options: ["Active components layer", "System-level layer", "IC layer", "Firmware layer"],
+                        correct: 1,
+                        explanation: "The system-level layer integrates all physical components."
+                    },
+                    {
+                        q: "What is the primary function of a printed circuit board (PCB) Layer?",
+                        options: ["Passive electronic components", "Mechanical support and electrical connectivity", "Power generation", "Integration of the physical components"],
+                        correct: 1,
+                        explanation: "PCBs provide structural support, electrical connections and multiple layers of insulation substrate."
+                    },
+                    {
+                        q: "Which IC type is customized and not readily available in the market?",
+                        options: ["FPGA", "Microcontroller", "ASIC", "Processor"],
+                        correct: 2,
+                        explanation: "ASICs are application-specific and not off-the-shelf."
+                    },
+                    {
+                        q: "Which IC type is flexible and programmable?",
+                        options: ["ASIC", "COTS IC", "Custom IC", "Secure IC"],
+                        correct: 1,
+                        explanation: "Commercial off-the-shelf (COTS) ICs are flexible, programmable and widely available."
+                    },
+                    {
+                        q: "Hardware security was historically overlooked because hardware was considered:",
+                        options: ["Too complex", "Easily replaceable", "Immune to attacks", "Open-source"],
+                        correct: 2,
+                        explanation: "Hardware was long assumed to be attack-resistant."
+                    },
+                    {
+                        q: "Which technology provides isolation between secure and non-secure data in hardware security?",
+                        options: ["Virtual Private Network (VPN)", "Trusted Execution Environments", "Secure boot mechanisms", "Encryption algorithms"],
+                        correct: 1,
+                        explanation: "TEEs isolate secure execution environments."
+                    },
+                    {
+                        q: "Which is NOT an example of a Trusted Execution Environment?",
+                        options: ["ARM TrustZone", "Intel SGX", "Samsung Knox", "AES"],
+                        correct: 3,
+                        explanation: "AES is a cryptographic algorithm, not a TEE."
+                    },
+                    {
+                        q: "Globalized chip manufacturing increases security risks primarily due to:",
+                        options: ["Higher performance", "Distributed supply chains", "Improved verification", "Open standards"],
+                        correct: 1,
+                        explanation: "Distributed manufacturing reduces control and trust."
+                    },
+                    {
+                        q: "Hardware Trojans are best described as:",
+                        options: ["Software viruses", "Manufacturing defects", "Malicious modifications of ICs", "Encryption algorithms"],
+                        correct: 2,
+                        explanation: "Trojans are intentional malicious alterations."
+                    },
+                    {
+                        q: "Which attack extracts secrets using physical signal leakage?",
+                        options: ["Reverse engineering", "Side-channel attack", "IP piracy", "Cloning"],
+                        correct: 1,
+                        explanation: "Side-channel attacks exploit power, timing, or EM leakage."
+                    },
+                    {
+                        q: "Which hardware attack targets PCB design information using x-ray inspection?",
+                        options: ["Chip-level attack", "System-level attack", "PCB-level attack", "Network-level attack"],
+                        correct: 2,
+                        explanation: "PCBs are easier to reverse engineer than ICs."
+                    },
+                    {
+                        q: "The attack surface refers to:",
+                        options: ["Physical chip area", "Total number of ICs", "Aggregate of all vulnerabilities", "Software interfaces only"],
+                        correct: 2,
+                        explanation: "Attack surface includes all known and unknown vulnerabilities."
+                    },
+                    {
+                        q: "A security model must include which two components?",
+                        options: ["Encryption and decryption", "Hardware and software", "Threat model and trust model", "Attacks and defenses"],
+                        correct: 2,
+                        explanation: "Both threat and trust models define security assumptions."
+                    },
+                    {
+                        q: "Functional bugs in hardware often result from:",
+                        options: ["Side-channel leakage", "Poor design and testing", "Secure architectures", "Formal verification"],
+                        correct: 1,
+                        explanation: "Most vulnerabilities stem from poor design practices."
+                    },
+                    {
+                        q: "Test and debug infrastructure is dangerous because it:",
+                        options: ["Increases power usage", "Reduces performance", "Can be misused for attacks", "Is expensive"],
+                        correct: 2,
+                        explanation: "Debug access can expose privileged internal states."
+                    },
+                    {
+                        q: "Which countermeasure operates at the circuit level?",
+                        options: ["Secure architecture", "Hardware obfuscation", "Formal verification", "Trojan detection"],
+                        correct: 1,
+                        explanation: "Circuit-level countermeasures include obfuscation."
+                    },
+                    {
+                        q: "PUFs and ORAM are examples of:",
+                        options: ["Software security tools", "Network protocols", "Hardware security primitives", "Cryptographic hash functions"],
+                        correct: 2,
+                        explanation: "They are component level hardware-based security primitives."
+                    },
+                    {
+                        q: "Which property ensures a system continues operating under attack?",
+                        options: ["Confidentiality", "Integrity", "Availability", "Non-repudiation"],
+                        correct: 2,
+                        explanation: "Availability ensures continued service."
+                    }
+                ],
+                tf: [
+                    {
+                        q: "Hardware security focuses only on protecting cryptographic algorithms, not physical components.",
+                        correct: false,
+                        explanation: "Hardware security protects electronic hardware components and the sensitive assets stored within them, including ICs, PCBs, and secrets."
+                    },
+                    {
+                        q: "Cryptographic keys, firmware, and configuration data are considered hardware security assets.",
+                        correct: true,
+                        explanation: "These are all hardware security assets."
+                    },
+                    {
+                        q: "Hardware security is a subfield of software security.",
+                        correct: false,
+                        explanation: "Hardware security is a distinct security class and serves as the foundation of system security."
+                    },
+                    {
+                        q: "Hardware security provides the trust anchor for software and information security.",
+                        correct: true,
+                        explanation: "Hardware security is foundational."
+                    },
+                    {
+                        q: "General-purpose systems are highly customized and tightly integrated with hardware.",
+                        correct: false,
+                        explanation: "General-purpose systems are versatile, programmable, and optimized for diverse use cases, not tightly customized."
+                    },
+                    {
+                        q: "Embedded systems are designed for unique use-case constraints.",
+                        correct: true,
+                        explanation: "Embedded systems are designed for specific constraints."
+                    },
+                    {
+                        q: "Hardware attacks are generally easier and have lower impact than software attacks.",
+                        correct: false,
+                        explanation: "Hardware attacks are harder to execute but have higher impact."
+                    },
+                    {
+                        q: "Globalization of chip manufacturing increases hardware trust concerns.",
+                        correct: true,
+                        explanation: "Globalization introduces trust issues."
+                    },
+                    {
+                        q: "Hardware Trojans are accidental manufacturing defects.",
+                        correct: false,
+                        explanation: "Hardware Trojans are malicious modifications intentionally inserted into ICs."
+                    },
+                    {
+                        q: "Side-channel attacks exploit physical signals such as power and electromagnetic emissions.",
+                        correct: true,
+                        explanation: "Side-channel attacks use physical leakage."
+                    },
+                    {
+                        q: "PCBs are harder to reverse engineer than integrated circuits.",
+                        correct: false,
+                        explanation: "PCBs are easier to reverse engineer and tamper with than ICs."
+                    },
+                    {
+                        q: "A security model must include both a threat model and a trust model.",
+                        correct: true,
+                        explanation: "Both models are required."
+                    },
+                    {
+                        q: "Most hardware vulnerabilities arise from functional bugs and poor design practices.",
+                        correct: true,
+                        explanation: "Poor design is a major source of vulnerabilities."
+                    },
+                    {
+                        q: "Debug and test infrastructures can be abused by attackers.",
+                        correct: true,
+                        explanation: "Test infrastructure is a vulnerability."
+                    },
+                    {
+                        q: "Hardware trust issues and hardware security issues are completely unrelated.",
+                        correct: false,
+                        explanation: "Hardware trust issues often lead to security concerns."
+                    }
+                ]
+            },
+            L02: {
+                title: "L02 - Cryptography Fundamentals",
+                mcq: [
+                    {
+                        q: "The CIA triad consists of confidentiality, integrity, and:",
+                        options: ["Authentication", "Authorization", "Availability", "Non-repudiation"],
+                        correct: 2,
+                        explanation: "Availability completes the CIA triad."
+                    },
+                    {
+                        q: "Cryptography is insufficient alone because security also depends on:",
+                        options: ["Hardware speed", "Threat modeling and assumptions", "Compiler choice speed", "Network bandwidth"],
+                        correct: 1,
+                        explanation: "Correct threat modeling is essential."
+                    },
+                    {
+                        q: "Which security service is NOT part of the NIST classification?",
+                        options: ["Confidentiality", "Authentication", "Authorization", "Obfuscation"],
+                        correct: 3,
+                        explanation: "Obfuscation is a technique, not a service."
+                    },
+                    {
+                        q: "Information-theoretic security differs from computational security because it:",
+                        options: ["Uses larger keys", "Does not rely on computational hardness", "Requires hardware support", "Is slower"],
+                        correct: 1,
+                        explanation: "Information-theoretic security is mathematically unbreakable."
+                    },
+                    {
+                        q: "A secure channel assumes the presence of:",
+                        options: ["Trusted hardware", "Encrypted storage", "Eavesdroppers", "Perfect anonymity"],
+                        correct: 2,
+                        explanation: "Secure channels are designed despite eavesdroppers."
+                    },
+                    {
+                        q: "One-time pads achieve perfect secrecy because:",
+                        options: ["Keys are reused", "Keys are truly random and as long as the message", "They use public keys", "They rely on hash functions"],
+                        correct: 1,
+                        explanation: "Random, non-reused keys ensure secrecy."
+                    },
+                    {
+                        q: "A major drawback of one-time pads is that:",
+                        options: ["They are computationally slow", "They always require key reuse", "Keys must be as long as the plaintext", "They are computationally insecure"],
+                        correct: 2,
+                        explanation: "Key distribution is impractical and must be communicated ahead of time."
+                    },
+                    {
+                        q: "Symmetric encryption requires:",
+                        options: ["Public-private key pairs", "Shared secret keys", "Digital signatures", "Certificates"],
+                        correct: 1,
+                        explanation: "Both parties use the same key."
+                    },
+                    {
+                        q: "A one-way function is characterized by:",
+                        options: ["Easy to encrypt", "Efficient decryption", "Easy to compute, hard to invert", "Guaranteed existence"],
+                        correct: 2,
+                        explanation: "Easy to calculate f(x) from x, hard to invert."
+                    },
+                    {
+                        q: "Trapdoor functions differ from one-way functions because they:",
+                        options: ["Are reversible by anyone", "Can be inverted with secret knowledge", "Are slower than one-way functions", "Use symmetric keys"],
+                        correct: 1,
+                        explanation: "Trapdoors allow efficient inversion."
+                    },
+                    {
+                        q: "Stream ciphers encrypt data by:",
+                        options: ["Block permutation", "XORing plaintext with keystream", "Modular exponentiation", "Hash chaining"],
+                        correct: 1,
+                        explanation: "Stream ciphers XOR keystream with plaintext."
+                    },
+                    {
+                        q: "A key weakness of stream ciphers is:",
+                        options: ["High latency", "No avalanche effect", "Large block size", "Key scheduling"],
+                        correct: 1,
+                        explanation: "Single-bit changes affect only one bit."
+                    },
+                    {
+                        q: "Block ciphers operate on:",
+                        options: ["Variable-length streams", "Fixed-size blocks", "Single bits", "Hash outputs"],
+                        correct: 1,
+                        explanation: "Block size is fixed in block ciphers."
+                    },
+                    {
+                        q: "Which property ensures small input changes cause large output changes?",
+                        options: ["Confusion", "Diffusion", "Authentication", "Integrity"],
+                        correct: 1,
+                        explanation: "Diffusion spreads input changes."
+                    },
+                    {
+                        q: "AES supports which key sizes?",
+                        options: ["256 bits only", "128 bits only", "128, 192, 256 bits", "Arbitrary length"],
+                        correct: 2,
+                        explanation: "AES supports three key sizes but block size is 128 bits only."
+                    },
+                    {
+                        q: "Which AES step provides confusion?",
+                        options: ["MixColumns", "ShiftRows", "AddRoundKey", "Byte Substitution"],
+                        correct: 1,
+                        explanation: "ShiftRows provides confusion."
+                    },
+                    {
+                        q: "Which AES step involves polynomial multiplication?",
+                        options: ["ShiftRows", "AddRoundKey", "MixColumns", "S-Box"],
+                        correct: 2,
+                        explanation: "MixColumns uses finite field math."
+                    },
+                    {
+                        q: "DES is considered insecure mainly due to:",
+                        options: ["Small block size", "Closed design", "Short key length", "Slow encryption"],
+                        correct: 2,
+                        explanation: "56-bit keys are brute-forceable."
+                    },
+                    {
+                        q: "Symmetric cryptography struggles with:",
+                        options: ["Encryption speed", "Key distribution", "Message size", "Error propagation"],
+                        correct: 1,
+                        explanation: "Secure key exchange is the main challenge."
+                    },
+                    {
+                        q: "Diffie–Hellman allows parties to:",
+                        options: ["Encrypt messages directly", "Authenticate identities", "Agree on a secret value", "Sign messages"],
+                        correct: 2,
+                        explanation: "DH establishes a shared secret key."
+                    },
+                    {
+                        q: "The security of Diffie–Hellman relies on:",
+                        options: ["Prime factorization", "Discrete logarithms difficulty", "Hash collisions", "Symmetric encryption"],
+                        correct: 1,
+                        explanation: "Discrete logs are computationally hard."
+                    },
+                    {
+                        q: "Diffie–Hellman is vulnerable to:",
+                        options: ["Brute-force attacks", "Man-in-the-middle attacks", "Side-channel attacks only", "Replay-resistant by default"],
+                        correct: 1,
+                        explanation: "Authentication is not inherent."
+                    },
+                    {
+                        q: "RSA is classified as:",
+                        options: ["Symmetric encryption", "Stream cipher", "Asymmetric cryptosystem", "Hash function"],
+                        correct: 2,
+                        explanation: "RSA uses public/private keys."
+                    },
+                    {
+                        q: "RSA security depends on the difficulty of:",
+                        options: ["Discrete logarithms", "Prime factorization", "Hash inversion", "Key reuse"],
+                        correct: 1,
+                        explanation: "Factoring large n is hard."
+                    },
+                    {
+                        q: "Which statement correctly distinguishes Diffie-Hellman (DH) from RSA?",
+                        options: ["Diffie-Hellman is used to exchange a shared secret key, while RSA is primarily used for encryption and digital signatures using public-private key pairs.", "Diffie-Hellman encrypts data using a private key, while RSA encrypts data using a symmetric session key.", "Diffie-Hellman provides authentication by default, while RSA cannot be used for authentication.", "Diffie-Hellman is faster than RSA for bulk data encryption."],
+                        correct: 0,
+                        explanation: "DH is for key exchange, RSA is for encryption and signatures."
+                    },
+                    {
+                        q: "Euler's totient function φ(n) represents:",
+                        options: ["Number of primes less than n", "Integers coprime with n", "Divisors of n", "Modular inverses"],
+                        correct: 1,
+                        explanation: "φ(n) counts coprime integers."
+                    },
+                    {
+                        q: "In RSA, the public exponent e must be:",
+                        options: ["Prime", "Even", "Relatively prime to φ(n)", "Smaller than p"],
+                        correct: 2,
+                        explanation: "This ensures invertibility."
+                    },
+                    {
+                        q: "Which algorithm computes the RSA private key?",
+                        options: ["Sieve of Eratosthenes", "Extended Euclidean algorithm", "Fermat test", "SHA-256"],
+                        correct: 1,
+                        explanation: "It computes modular inverses."
+                    },
+                    {
+                        q: "Side-channel attacks exploit:",
+                        options: ["Algorithm weaknesses", "Physical implementation leakage", "Cryptographic proofs", "Network protocols"],
+                        correct: 1,
+                        explanation: "Side-channels leak physical information."
+                    },
+                    {
+                        q: "In system security, 'data in motion' refers to:",
+                        options: ["Storage", "Processing", "Communication", "Side-channel leakage"],
+                        correct: 2,
+                        explanation: "Communication secures data in transit."
+                    },
+                    {
+                        q: "Secure enclaves primarily protect:",
+                        options: ["Network traffic", "Data at rest", "Data in manipulation", "Certificates"],
+                        correct: 2,
+                        explanation: "Enclaves secure computation."
+                    }
+                ],
+                tf: [
+                    {
+                        q: "Cryptography alone is sufficient to guarantee system security.",
+                        correct: false,
+                        explanation: "Secure systems require threat modeling, correct assumptions, and understanding."
+                    },
+                    {
+                        q: "Confidentiality is the only security service defined by NIST.",
+                        correct: false,
+                        explanation: "NIST defines confidentiality, data integrity, authentication, authorization, and non-repudiation."
+                    },
+                    {
+                        q: "Information-theoretic security does not rely on computational hardness assumptions.",
+                        correct: true,
+                        explanation: "It's mathematically secure."
+                    },
+                    {
+                        q: "One-time pads provide perfect secrecy if keys are reused securely.",
+                        correct: false,
+                        explanation: "One-time pads require non-reused, truly random keys to maintain perfect secrecy."
+                    },
+                    {
+                        q: "The key length of a one-time pad must be at least as long as the plaintext.",
+                        correct: true,
+                        explanation: "Keys must match plaintext length."
+                    },
+                    {
+                        q: "Symmetric cryptography uses the same secret key for encryption and decryption.",
+                        correct: true,
+                        explanation: "Same key for both operations."
+                    },
+                    {
+                        q: "One-way functions are proven to exist mathematically.",
+                        correct: false,
+                        explanation: "There is no proof that one-way functions exist or that they can be constructed."
+                    },
+                    {
+                        q: "Trapdoor functions can be easily inverted with special knowledge.",
+                        correct: true,
+                        explanation: "With secret knowledge, inversion is easy."
+                    },
+                    {
+                        q: "Stream ciphers provide a strong avalanche effect with respect to plaintext bits.",
+                        correct: false,
+                        explanation: "Stream ciphers do not exhibit an avalanche effect; each ciphertext bit depends on one plaintext bit."
+                    },
+                    {
+                        q: "Multiple modes of operation in block ciphers can provide confidentiality, authentication and error detection.",
+                        correct: true,
+                        explanation: "Various modes provide different security properties."
+                    },
+                    {
+                        q: "Each regular round in AES consists of 4 steps.",
+                        correct: true,
+                        explanation: "SubBytes, ShiftRows, MixColumns, AddRoundKey."
+                    },
+                    {
+                        q: "Diffie–Hellman is a practical method for public exchange of a secret key.",
+                        correct: true,
+                        explanation: "DH enables secure key exchange."
+                    },
+                    {
+                        q: "Asymmetric cryptosystem is a public encryption method that has public encryption and decryption algorithms.",
+                        correct: true,
+                        explanation: "Uses public/private key pairs."
+                    },
+                    {
+                        q: "A commonly used cryptographic hash function is SHA-1.",
+                        correct: true,
+                        explanation: "SHA-1 is a well-known hash function."
+                    },
+                    {
+                        q: "Block ciphers operate on fixed-size blocks of data.",
+                        correct: true,
+                        explanation: "Fixed block size is characteristic."
+                    },
+                    {
+                        q: "AES uses substitution, permutation, and bit mixing operations.",
+                        correct: true,
+                        explanation: "These are AES operations."
+                    },
+                    {
+                        q: "The main weakness of symmetric cryptography is secure key distribution.",
+                        correct: true,
+                        explanation: "Key distribution is the primary challenge."
+                    },
+                    {
+                        q: "Diffie–Hellman directly encrypts messages between parties.",
+                        correct: false,
+                        explanation: "Diffie–Hellman is used to establish a shared secret key, not to encrypt messages directly."
+                    }
+                ]
+            },
+            L03: {
+                title: "L03 - Trust and Root of Trust",
+                mcq: [
+                    {
+                        q: "Which question best represents a core challenge of digital/cyber identification?",
+                        options: ["How fast a computer executes programs", "What operating system a computer runs", "What proof exists that a claimed identity is genuine", "How much memory a system has"],
+                        correct: 2,
+                        explanation: "Digital identification requires proof of genuine identity."
+                    },
+                    {
+                        q: "Why is identity alone insufficient for establishing trust between computing systems?",
+                        options: ["Identity can be encrypted", "A system may be compromised despite correct identity", "Identity is hardware-dependent", "Identity cannot be verified remotely"],
+                        correct: 1,
+                        explanation: "Even a correctly identified system may be compromised by malware."
+                    },
+                    {
+                        q: "Trust issues primarily arise from which source?",
+                        options: ["Software bugs", "Cryptographic weaknesses", "Untrusted entities in the hardware lifecycle", "Network misconfigurations"],
+                        correct: 2,
+                        explanation: "Trust issues stem from untrusted design, fabrication, test, and distribution entities."
+                    },
+                    {
+                        q: "Which statement best distinguishes security from trust?",
+                        options: ["Security is software-only, trust is hardware-only", "Trust issues always cause attacks", "Security concerns vulnerabilities, trust concerns untrusted components", "Trust eliminates the need for security"],
+                        correct: 2,
+                        explanation: "Security and trust address different concerns."
+                    },
+                    {
+                        q: "A component is considered trusted when:",
+                        options: ["It is verified formally", "It has intrinsic security properties", "System security depends on it", "It is immutable"],
+                        correct: 2,
+                        explanation: "When system security depends on a component, it is trusted."
+                    },
+                    {
+                        q: "A component is considered trustworthy when:",
+                        options: ["It is critical to system security", "It is implemented correctly", "It controls access policies", "It performs cryptographic operations"],
+                        correct: 1,
+                        explanation: "Trustworthiness is determined by correct implementation."
+                    },
+                    {
+                        q: "Which is NOT listed as a computing system security pattern?",
+                        options: ["Algorithmic", "Structural", "Procedural", "Economic"],
+                        correct: 3,
+                        explanation: "Economic is not a security pattern."
+                    },
+                    {
+                        q: "The principle of least privilege requires that components:",
+                        options: ["Have identical access rights", "Are isolated physically", "Receive only required privileges", "Are verified formally"],
+                        correct: 2,
+                        explanation: "Least privilege limits access strictly to what is necessary."
+                    },
+                    {
+                        q: "What does 'fail-safe defaults' mean in secure design?",
+                        options: ["Deny access unless explicitly permitted", "Restart automatically on failure", "Use redundancy", "Encrypt all failures"],
+                        correct: 0,
+                        explanation: "Fail-safe defaults allow only explicit permission."
+                    },
+                    {
+                        q: "Interface-Centric Access Control (IC-AC) primarily regulates:",
+                        options: ["Internal module logic across interfaces", "Communication privileges across interfaces", "Clock synchronization", "Power management across interfaces"],
+                        correct: 1,
+                        explanation: "IC-AC governs whether components may communicate via interfaces."
+                    },
+                    {
+                        q: "In IC-AC, which entity is responsible for interface security?",
+                        options: ["The operating system", "The network controller", "Each functional module", "The compiler"],
+                        correct: 2,
+                        explanation: "Each module is responsible for its own interface security."
+                    },
+                    {
+                        q: "Why is hardware considered an excellent trust anchor?",
+                        options: ["It is easier to update", "It has the lowest attack impact", "It has the highest attack difficulty", "It eliminates malware"],
+                        correct: 2,
+                        explanation: "Hardware attacks are hardest, making hardware suitable as a trust anchor."
+                    },
+                    {
+                        q: "According to NIST SP 1800-19B, a Hardware Root-of-Trust is:",
+                        options: ["Any cryptographic algorithm", "A trusted software stack", "An inherently trusted hardware/firmware combination", "A secure operating system"],
+                        correct: 2,
+                        explanation: "NIST defines HRoT as an inherently trusted hardware/firmware combination."
+                    },
+                    {
+                        q: "A formal definition of HRoT emphasizes:",
+                        options: ["Reprogrammability", "Immutability under a defined threat model", "Network isolation", "High performance"],
+                        correct: 1,
+                        explanation: "HRoT is immutable and trusted against a well-defined threat model."
+                    },
+                    {
+                        q: "Which is a core HRoT property?",
+                        options: ["High throughput", "Proof of authenticity", "Software updatability", "Virtualization support"],
+                        correct: 1,
+                        explanation: "Proof of authenticity is a core HRoT property."
+                    },
+                    {
+                        q: "Physically Unclonable Functions (PUFs) primarily provide:",
+                        options: ["Encryption", "Unique and verifiable identity", "Error correction", "Access control"],
+                        correct: 1,
+                        explanation: "PUFs provide unique, unclonable identifiers."
+                    },
+                    {
+                        q: "Root of Trust for Measurement (RTM) is responsible for:",
+                        options: ["Storing keys", "Reporting integrity to third parties", "Recording what software is running", "Encrypting data"],
+                        correct: 2,
+                        explanation: "RTM initiates measurement of running software."
+                    },
+                    {
+                        q: "Root of Trust for Storage (RTS) provides:",
+                        options: ["Random number generation", "Shielded storage locations", "Network authentication", "Interface control"],
+                        correct: 1,
+                        explanation: "RTS implements protected storage with integrity/confidentiality."
+                    },
+                    {
+                        q: "Root of Trust for Reporting (RTR) uses cryptography to:",
+                        options: ["Network authentication", "Authenticate users", "Give assurances to third parties", "Random number generation"],
+                        correct: 2,
+                        explanation: "RTR reports platform integrity externally."
+                    },
+                    {
+                        q: "Which component typically implements RTM, RTS, and RTR?",
+                        options: ["Central Processing Unit (CPU)", "Graphics Processing Unit (GPU)", "Trusted Platform Module (TPM)", "Basic Input/Output System (BIOS)"],
+                        correct: 2,
+                        explanation: "These roots tie to the TPM."
+                    },
+                    {
+                        q: "The Trusted Computing Base (TCB) includes:",
+                        options: ["Only hardware", "Only software", "Hardware and software enforcing security rules", "User applications"],
+                        correct: 2,
+                        explanation: "TCB is all hardware and software enforcing security policies."
+                    },
+                    {
+                        q: "Why are vulnerabilities in the TCB critical?",
+                        options: ["They reduce performance", "They expose encryption keys", "They jeopardize the entire system", "They affect usability"],
+                        correct: 2,
+                        explanation: "Vulnerabilities in the TCB can jeopardize the security of the entire system."
+                    },
+                    {
+                        q: "Ideally, a TCB should be:",
+                        options: ["Large and flexible", "Rooted in software", "Small, isolated, and hardware-rooted", "Cloud-based"],
+                        correct: 2,
+                        explanation: "Small, isolated TCB is ideal."
+                    },
+                    {
+                        q: "Which TPM function is NOT listed?",
+                        options: ["Platform identification", "Cryptographic functions", "Measurement and attestation", "Task scheduling"],
+                        correct: 3,
+                        explanation: "Task scheduling is not a TPM function."
+                    },
+                    {
+                        q: "A reference monitor in TCB anchor must satisfy all EXCEPT:",
+                        options: ["Complete mediation", "Tamperproof", "High throughput", "Verifiable correctness"],
+                        correct: 2,
+                        explanation: "High throughput is not a requirement."
+                    },
+                    {
+                        q: "Access Control Lists (ACLs) are associated with:",
+                        options: ["Tickets", "Processes", "Objects/resources", "Capabilities"],
+                        correct: 2,
+                        explanation: "ACLs store permissions per object."
+                    },
+                    {
+                        q: "Capabilities differ from ACLs because they:",
+                        options: ["Depend on authentication", "Are stored with objects", "Can be transferred between processes", "Require user identity"],
+                        correct: 2,
+                        explanation: "Capabilities are unforgeable tickets that can be passed."
+                    }
+                ],
+                tf: [
+                    {
+                        q: "Digital identity alone is sufficient to establish trust between two computing systems.",
+                        correct: false,
+                        explanation: "Identity alone is not sufficient because a system may be compromised even if its identity is genuine."
+                    },
+                    {
+                        q: "Trust issues in computing systems mainly arise from vulnerabilities in software code.",
+                        correct: false,
+                        explanation: "Trust issues arise from untrusted entities in the hardware lifecycle."
+                    },
+                    {
+                        q: "A trusted component is one whose failure would compromise the system's security policy.",
+                        correct: true,
+                        explanation: "Trust is determined by the component's role in system security."
+                    },
+                    {
+                        q: "A trustworthy component is defined based on its intrinsic properties, such as correct implementation.",
+                        correct: true,
+                        explanation: "Trustworthiness depends on implementation quality."
+                    },
+                    {
+                        q: "Security concerns always precede trust concerns in system design.",
+                        correct: false,
+                        explanation: "Trust issues often lead to security concerns."
+                    },
+                    {
+                        q: "The principle of least privilege requires granting components more privileges to improve performance.",
+                        correct: false,
+                        explanation: "Least privilege requires granting only necessary privileges."
+                    },
+                    {
+                        q: "Fail-safe defaults mean access is denied unless explicitly permitted.",
+                        correct: true,
+                        explanation: "Only explicit permission is allowed."
+                    },
+                    {
+                        q: "Interface-Centric Access Control regulates communication privileges through interfaces.",
+                        correct: true,
+                        explanation: "IC-AC controls component interactions."
+                    },
+                    {
+                        q: "In IC-AC, interface security is the responsibility of the operating system.",
+                        correct: false,
+                        explanation: "Each module is responsible for its own interface security."
+                    },
+                    {
+                        q: "Hardware has the highest attack difficulty compared to other system layers.",
+                        correct: true,
+                        explanation: "Hardware is the hardest to attack."
+                    },
+                    {
+                        q: "According to NIST, a Hardware Root-of-Trust can be implemented purely in software.",
+                        correct: false,
+                        explanation: "HRoT requires hardware and firmware combination."
+                    },
+                    {
+                        q: "Physically Unclonable Functions provide unique and verifiable hardware identity.",
+                        correct: true,
+                        explanation: "PUFs provide unique identification."
+                    },
+                    {
+                        q: "The Root of Trust for Measurement is responsible for storing cryptographic keys.",
+                        correct: false,
+                        explanation: "RTM records what software is running."
+                    },
+                    {
+                        q: "Vulnerabilities in the Trusted Computing Base can compromise the entire system.",
+                        correct: true,
+                        explanation: "TCB compromise jeopardizes system security."
+                    },
+                    {
+                        q: "Every secure computing system must have some TCB.",
+                        correct: true,
+                        explanation: "TCB is essential for secure systems."
+                    },
+                    {
+                        q: "Reference monitor in TCB anchor is an abstraction used to validate access to objects by authorized subjects.",
+                        correct: true,
+                        explanation: "Reference monitors validate access."
+                    },
+                    {
+                        q: "In the RISC-V RoT design, the RoT unit can enter a low-power dormant state.",
+                        correct: true,
+                        explanation: "RoT supports minimal-power operation."
+                    },
+                    {
+                        q: "Formally, Hardware Root-of-Trust (HRoT) is an immutable hardware component or set of components considered unconditionally trusted against a well-defined threat model.",
+                        correct: true,
+                        explanation: "This is the formal definition of HRoT."
+                    }
+                ]
+            }
+        };
+
+        // Application State
+        let currentQuestion = 0;
+        let userAnswers = {};
+        let showResults = false;
+        let selectedLecture = null;
+        let questionType = 'mcq';
+        let questionTypeSelected = false;
+
+        // Get lectures
+        const lectures = Object.keys(quizData);
+
+        // SVG Icons as strings
+        const checkCircleIcon = `<svg class="answer-review-icon correct" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+        const xCircleIcon = `<svg class="answer-review-icon incorrect" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+        const awardIcon = `<svg class="results-icon passed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8 14 12 17 16 14"></polyline><line x1="12" y1="17" x2="12" y2="23"></line><line x1="9" y1="23" x2="15" y2="23"></line></svg>`;
+        const rotateIcon = `<svg style="width: 1.25rem; height: 1.25rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2-8.83"></path></svg>`;
+        const bookIcon = `<svg style="width: 3rem; height: 3rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>`;
+
+        // Utility Functions
+        function getButtonLabel() {
+            return questionType === 'mcq' ? 'Multiple Choice' : 'True/False';
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            const questions = quizData[selectedLecture][questionType];
+            questions.forEach((q, index) => {
+                if (questionType === 'mcq') {
+                    if (userAnswers[index] === q.correct) correct++;
+                } else {
+                    if (userAnswers[index] === q.correct) correct++;
+                }
+            });
+            return { correct, total: questions.length };
+        }
+
+        function handleAnswer(answerIndex) {
+            if (showResults) return;
+            userAnswers[currentQuestion] = answerIndex;
+            render();
+        }
+
+        function nextQuestion() {
+            const questions = quizData[selectedLecture][questionType];
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                render();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                render();
+            }
+        }
+
+        function submitQuiz() {
+            showResults = true;
+            render();
+        }
+
+        function selectLecture(lecture) {
+            selectedLecture = lecture;
+            currentQuestion = 0;
+            userAnswers = {};
+            questionType = 'mcq';
+            questionTypeSelected = false;
+            showResults = false;
+            render();
+        }
+
+        function setQuestionType(type) {
+            questionType = type;
+            questionTypeSelected = true;
+            currentQuestion = 0;
+            userAnswers = {};
+            showResults = false;
+            render();
+        }
+
+        function restartQuiz() {
+            userAnswers = {};
+            currentQuestion = 0;
+            showResults = false;
+            selectedLecture = null;
+            questionTypeSelected = false;
+            render();
+        }
+
+        // Render Functions
+        function renderLectureSelection() {
+            const lectureCards = lectures.map(lecture => `
+        <div class="lecture-card" onclick="selectLecture('${lecture}')">
+            <h2>${lecture}</h2>
+            <p>${quizData[lecture].title}</p>
+            <div class="lecture-stats">
+                <div class="stat-row">
+                    <span>Multiple Choice:</span>
+                    <span>${quizData[lecture].mcq.length} questions</span>
+                </div>
+                <div class="stat-row">
+                    <span>True/False:</span>
+                    <span>${quizData[lecture].tf.length} questions</span>
+                </div>
+            </div>
+            <button class="btn btn-primary">Start Quiz</button>
+        </div>
+    `).join('');
+
+            return `
+        <div class="container">
+            <div class="lecture-header">
+                <div class="icon-badge">
+                    ${bookIcon}
+                </div>
+                <h1>Hardware Security Quiz</h1>
+                <p>Test your knowledge across three comprehensive lectures</p>
+            </div>
+            <div class="lecture-grid">
+                ${lectureCards}
+            </div>
+        </div>
+    `;
+        }
+
+        function renderQuestionTypeSelection() {
+            return `
+        <div class="container">
+            <button class="btn btn-back" onclick="restartQuiz()">← Back to Lectures</button>
+            <div class="card">
+                <h2>${quizData[selectedLecture].title}</h2>
+                <p>Choose your question type</p>
+                <div class="button-group">
+                    <button class="btn btn-primary btn-large" onclick="setQuestionType('mcq')">
+                        Multiple Choice Questions (${quizData[selectedLecture].mcq.length} questions)
+                    </button>
+                    <button class="btn btn-green btn-large" onclick="setQuestionType('tf')">
+                        True/False Questions (${quizData[selectedLecture].tf.length} questions)
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+        }
+
+        function renderQuizScreen() {
+            const questions = quizData[selectedLecture][questionType];
+            const currentQ = questions[currentQuestion];
+            const totalQuestions = questions.length;
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            const hasAnswered = userAnswers[currentQuestion] !== undefined;
+
+            let optionsHTML = '';
+            if (questionType === 'mcq') {
+                optionsHTML = `
+            <div class="options-container">
+                ${currentQ.options.map((option, index) => `
+                    <button class="option-button ${userAnswers[currentQuestion] === index ? 'selected' : ''}" 
+                            onclick="handleAnswer(${index})">
+                        <span class="option-letter">${String.fromCharCode(65 + index)}.</span> ${option}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+            } else {
+                optionsHTML = `
+            <div class="true-false-container">
+                <button class="btn-true ${userAnswers[currentQuestion] === true ? 'selected' : ''}" 
+                        onclick="handleAnswer(true)">True</button>
+                <button class="btn-false ${userAnswers[currentQuestion] === false ? 'selected' : ''}" 
+                        onclick="handleAnswer(false)">False</button>
+            </div>
+        `;
+            }
+
+            return `
+        <div class="container-lg">
+            <button class="btn btn-back" onclick="restartQuiz()">← Back to Lectures</button>
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span class="question-info">Question ${currentQuestion + 1} of ${totalQuestions}</span>
+                    <span class="question-type">${getButtonLabel()}</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill" style="width: ${progress}%"></div>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <h3>${currentQ.q}</h3>
+                ${optionsHTML}
+            </div>
+
+            <div class="button-group-horizontal">
+                <button class="btn btn-prev" ${currentQuestion === 0 ? 'disabled' : ''} onclick="prevQuestion()">Previous</button>
+                ${currentQuestion === totalQuestions - 1
+                    ? `<button class="btn btn-submit" onclick="submitQuiz()">Submit Quiz</button>`
+                    : `<button class="btn btn-next" onclick="nextQuestion()">Next</button>`
+                }
+            </div>
+
+            <div class="answer-count">
+                ${Object.keys(userAnswers).length} of ${totalQuestions} questions answered
+            </div>
+        </div>
+    `;
+        }
+
+        function renderResultsScreen() {
+            const { correct, total } = calculateScore();
+            const percentage = Math.round((correct / total) * 100);
+            const isPassed = percentage >= 70;
+            const questions = quizData[selectedLecture][questionType];
+
+            const reviewHTML = questions.map((q, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = questionType === 'mcq'
+                    ? userAnswer === q.correct
+                    : userAnswer === q.correct;
+
+                let contentHTML = '';
+                if (questionType === 'mcq') {
+                    contentHTML = `
+                <div class="answer-options">
+                    ${q.options.map((option, optIndex) => {
+                        const isUserAnswer = userAnswer === optIndex;
+                        const isCorrectAnswer = optIndex === q.correct;
+
+                        let className = 'answer-option neutral';
+                        if (isCorrectAnswer) className = 'answer-option correct';
+                        else if (isUserAnswer) className = 'answer-option incorrect';
+
+                        return `
+                            <div class="${className}">
+                                <span class="answer-option-text">${option}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+                } else {
+                    contentHTML = `
+                <div class="answer-result ${isCorrect ? 'correct' : 'incorrect'}">
+                    Your answer: <strong>${userAnswer === true ? 'True' : userAnswer === false ? 'False' : 'Not answered'}</strong><br>
+                    Correct answer: <strong>${q.correct ? 'True' : 'False'}</strong>
+                </div>
+            `;
+                }
+
+                return `
+            <div class="answer-review ${isCorrect ? 'correct' : 'incorrect'}">
+                <div class="answer-review-header">
+                    ${isCorrect ? checkCircleIcon : xCircleIcon}
+                    <div class="answer-review-content">
+                        <div class="answer-review-question">Question ${index + 1}: ${q.q}</div>
+                        ${contentHTML}
+                        <div class="answer-explanation">
+                            <strong>Explanation:</strong> ${q.explanation}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+            }).join('');
+
+            return `
+        <div class="container-lg">
+            <div class="results-container">
+                <div class="results-header">
+                    ${isPassed ? awardIcon : `<svg class="results-icon warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`}
+                    <h2>Quiz Complete!</h2>
+                    <div class="results-score">${percentage}%</div>
+                    <p class="results-text">${correct} out of ${total} correct</p>
+                </div>
+
+                <button class="btn btn-primary" onclick="restartQuiz()" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    ${rotateIcon}
+                    Take Another Quiz
+                </button>
+            </div>
+
+            <div class="review-section">
+                <h3>Review Answers</h3>
+                ${reviewHTML}
+            </div>
+        </div>
+    `;
+        }
+
+        // Main Render Function
+        function render() {
+            const app = document.getElementById('app');
+
+            if (!selectedLecture) {
+                app.innerHTML = renderLectureSelection();
+            } else if (!questionTypeSelected) {
+                app.innerHTML = renderQuestionTypeSelection();
+            } else if (showResults) {
+                app.innerHTML = renderResultsScreen();
+            } else {
+                app.innerHTML = renderQuizScreen();
+            }
+        }
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', render);
+
+    </script>
+</body>
+
+</html>
